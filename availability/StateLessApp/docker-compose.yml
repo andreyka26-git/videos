@@ -1,0 +1,45 @@
+version: "3.7"
+
+services:
+  stateless_api1:
+    build:
+      context: .
+    image: stateless_api1
+    container_name: stateless_api1
+    #ports:
+    #  - 7001:80
+    environment:
+      - ASPNETCORE_URLS=http://*:80
+      - ASPNETCORE_ENVIRONMENT=PRODUCTION
+      - NodeId=first_app
+
+  stateless_api2:
+    build:
+      context: .
+    image: stateless_api2
+    container_name: stateless_api2
+    #ports:
+    #  - 7001:80
+    environment:
+      - ASPNETCORE_URLS=http://*:80
+      - ASPNETCORE_ENVIRONMENT=PRODUCTION
+      - NodeId=second_app
+    
+
+
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./app.conf:/etc/nginx/conf.d/app.conf
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 5000:5000
+    depends_on:
+      - stateless_api2
+      - stateless_api1
+
+
+
+
